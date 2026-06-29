@@ -1,10 +1,38 @@
-﻿using System.Collections;
+﻿using System;
 
-Stack<double> myStack = new Stack<double>();
+namespace CubeAssistance
+{
+    class Program{
 
-myStack.Push(3.0);
+        static bool checkEnd(string c){
+            if(c=="Y"){ 
+                Console.WriteLine("THE END!");
+                return true;
+            }
+            else if(c == "N"){
+                return false;
+            }
+            else
+            {
+                Console.WriteLine("ERROR - bad value! [\"Y\"/\"N\" only]");
+                return false;
+            }
+        }
 
-foreach(var item in myStack)
-    Console.WriteLine(item);
 
+        static void Main(string[] args){
 
+            bool end = false;
+
+            //main loop
+            while (!end)
+            {
+
+                Console.WriteLine("Do you want to finish your cube session [Y/N]?");
+                string input = Console.ReadLine().ToUpper();
+                end = checkEnd(input);    
+            }
+
+        }
+    }
+}
