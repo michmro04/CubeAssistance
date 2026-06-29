@@ -1,38 +1,57 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Net.NetworkInformation;
+using System.Runtime.CompilerServices;
 
 namespace CubeAssistance
 {
     class Program{
 
-        static bool checkEnd(string c){
-            if(c=="Y"){ 
-                Console.WriteLine("THE END!");
-                return true;
-            }
-            else if(c == "N"){
-                return false;
-            }
-            else
-            {
-                Console.WriteLine("ERROR - bad value! [\"Y\"/\"N\" only]");
-                return false;
-            }
-        }
-
 
         static void Main(string[] args){
 
-            bool end = false;
+            List<double> myList = new List<double>();
+            Stopwatch stoper = new Stopwatch();
+            bool isRunning = true;
+
+            //Welcoming texts            
+            Console.WriteLine("🎲----- Welcome in your CubeAssistance!! ----- 🎲");
+            Console.WriteLine("\n#Instruction#:");
+            Console.WriteLine("- press SPACEBAR to start the stoper and press again to stop");
+            Console.WriteLine("- press 'Q' key after stop stoper to exit application.");
+            Console.WriteLine("\nEnjoy your solves!!\n");
 
             //main loop
-            while (!end)
+            while(isRunning)
             {
+                var key = Console.ReadKey(true).Key;
 
-                Console.WriteLine("Do you want to finish your cube session [Y/N]?");
-                string input = Console.ReadLine().ToUpper();
-                end = checkEnd(input);    
+                switch(key)
+                {
+                    case ConsoleKey.Spacebar:
+                        stoper.Start();
+
+                        if(Console.ReadKey().Key == ConsoleKey.Spacebar)
+                            stoper.Stop();
+                    
+                        double timeSpan = stoper.Elapsed.TotalMilliseconds;
+                        timeSpan /= 1000;
+                        timeSpan = Math.Round(timeSpan, 3);
+                        myList.Add(timeSpan);
+
+                        Console.WriteLine("RunTime " + timeSpan + " s.");
+                        stoper.Reset();
+
+
+                        break;
+
+
+                    case ConsoleKey.Q:
+                        Console.WriteLine("The End!");
+                        isRunning = false;
+                        break;
+                }
             }
-
         }
     }
 }
