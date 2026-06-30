@@ -97,7 +97,8 @@ namespace CubeAssistance
             Console.BackgroundColor = ConsoleColor.Black;
             Console.ForegroundColor = ConsoleColor.DarkGray;            
             Console.WriteLine("#---------- Welcome in your CubeAssistance!! ----------#");
-            Console.WriteLine("|                   # Instruction #:                   |");
+            Console.WriteLine("|                                                      |");
+            Console.WriteLine("|     # Instruction #:                                 |");
             Console.WriteLine("|- press SPACEBAR to start the stoper of inspection,   |");
             Console.WriteLine("|- press it again to start timer,                      |");
             Console.WriteLine("|- press it again to stop,                             |");
