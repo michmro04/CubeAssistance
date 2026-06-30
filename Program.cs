@@ -53,11 +53,11 @@ namespace CubeAssistance
         static void showStats()
         {
             double ao5 = averageOfN(5, myList);
-            Console.WriteLine("Ao5=" + ao5);
+            Console.WriteLine("Ao5=" + ao5 + "s");
             double ao12 = averageOfN(12, myList);
-            Console.WriteLine("Ao12=" + ao12);
+            Console.WriteLine("Ao12=" + ao12 + "s");
             double ao20 = averageOfN(20, myList);
-            Console.WriteLine("Ao20=" + ao20);
+            Console.WriteLine("Ao20=" + ao20 + "s");
         }
 
         static void generateScramble()
@@ -88,22 +88,27 @@ namespace CubeAssistance
             Console.WriteLine(scramble);
         }
 
-        
-
 
         static void Main(string[] args){
 
-            //Welcoming texts            
-            Console.WriteLine("🎲 ----- Welcome in your CubeAssistance!! ----- 🎲");
-            Console.WriteLine("\n# Instruction #:");
-            Console.WriteLine("- press SPACEBAR to start the stoper of inspection,\n- press again to start timer,\n- press again to stop,");
-            Console.WriteLine("- press 'Q' key after stop stoper to exit application.");
-            Console.WriteLine("\nEnjoy your solves!!\n");
+            Console.CursorVisible = false;
             
-
+            //Welcoming texts
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.DarkGray;            
+            Console.WriteLine("#---------- Welcome in your CubeAssistance!! ----------#");
+            Console.WriteLine("|                   # Instruction #:                   |");
+            Console.WriteLine("|- press SPACEBAR to start the stoper of inspection,   |");
+            Console.WriteLine("|- press it again to start timer,                      |");
+            Console.WriteLine("|- press it again to stop,                             |");
+            Console.WriteLine("|- press 'Q' key after stop stoper to exit application.|");
+            Console.WriteLine("#------------------!Enjoy your solves!-----------------#");
+            Console.ResetColor();
+           
             //main loop
             while(isRunning)
             {
+                Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine("\nSolve no." + index);
                 generateScramble();
                 
@@ -112,36 +117,61 @@ namespace CubeAssistance
                 switch(key)
                 {
                     case ConsoleKey.Spacebar:
-                        Console.WriteLine("Inspection si running (15s)...");
+                        Console.ResetColor();
+                        Console.WriteLine("Inspection is running (15s)...");
                         inspectionTimer.Start();
                         do{
                             double inspectionTimeSpan = inspectionTimer.Elapsed.TotalMilliseconds;
                             inspectionTimeSpan /= 1000; 
                             if(inspectionTimeSpan>=8.0 && eightSecWarningGiven==false){
-                                Console.WriteLine(" --- 8 sec left --- ");
+                                Console.Write(" --- 8 sec left --- ");
                                 eightSecWarningGiven = true;
                             }
                             if(inspectionTimeSpan>=12.0 && twelveSecWarningGiven==false){ 
-                                Console.WriteLine(" --- 12 sec left --- ");
+                                Console.SetCursorPosition(0, Console.CursorTop);
+                                Console.Write(" --- 12 sec left ---         ");
                                 twelveSecWarningGiven = true;
                             }
                             if(inspectionTimeSpan>=15.0 && twoSecPenaltyWarningGiven==false) {
+                                Console.Write(new string(' ', Console.WindowWidth));
+                                Console.SetCursorPosition(0, Console.CursorTop-1);
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.Write(" --- +2 sec penalty ---         ");
                                 twoSecPenalty = true;
-                                Console.WriteLine(" --- +2 sec penalty --- ");
                                 twoSecPenaltyWarningGiven = true;
                             }
                             if(inspectionTimeSpan>=17.0 && dnfPenaltyWarningGiven==false) {
+                                Console.Write(new string(' ', Console.WindowWidth));
+                                Console.SetCursorPosition(0, Console.CursorTop-1);
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.WriteLine(" --- DNF penalty ---           ");
                                 dnfPenalty = true;
-                                Console.WriteLine(" --- DNF penalty --- ");
                                 dnfPenaltyWarningGiven = true;
                             }  
 
                         }while(!Console.KeyAvailable);
                         
+                        Console.SetCursorPosition(0, Console.CursorTop-1);
+                        Console.Write(new string(' ', Console.WindowWidth));
+                        Console.SetCursorPosition(0, Console.CursorTop);
+
+                        if(dnfPenalty ){
+                            Console.WriteLine("Penalty: DNF.");
+                        }
+                        else if (twoSecPenalty)
+                        {
+                            Console.WriteLine("Penalty: +2 sec.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("No penlaty");
+                        }
+
                         if(Console.ReadKey(true).Key == ConsoleKey.Spacebar){
                             inspectionTimer.Stop();                
                             stoper.Start();
-                            Console.WriteLine("Timer is running!!");
+                            Console.ForegroundColor = ConsoleColor.Gray;
+                            Console.Write("Timer is running!!       ");
                         }
 
                         if(Console.ReadKey().Key == ConsoleKey.Spacebar)
@@ -155,22 +185,23 @@ namespace CubeAssistance
                         if(dnfPenalty) timeSpan = double.PositiveInfinity;
                         
                         timeSpan = Math.Round(timeSpan, 3);
-
+                        Console.SetCursorPosition(0, Console.CursorTop);
+                        
                         if(double.IsPositiveInfinity(timeSpan))
-                            Console.WriteLine("Time" + index + " = DNF.");
+                            Console.WriteLine("Time" + index + " = DNF.                   ");
                         else if(twoSecPenalty)
-                            Console.WriteLine("Time" + index + " = " + timeSpan + "s. (+2)");
+                            Console.WriteLine("Time" + index + " = " + timeSpan + "s. (+2)                 ");
                         else 
-                            Console.WriteLine("Time" + index + " = " + timeSpan + " s.");
+                            Console.WriteLine("Time" + index + " = " + timeSpan + " s.                ");
                         
                         myList.Add(timeSpan);
                         stoper.Reset();
+                        Console.ForegroundColor = ConsoleColor.DarkGray;
                         showStats();
-
                         break;
 
-
                     case ConsoleKey.Q:
+                        Console.ResetColor();
                         Console.WriteLine("The End!");
                         isRunning = false;
                         break;
