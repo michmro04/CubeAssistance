@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
 using System.Linq;
+using System.Text;
 
 namespace CubeAssistance
 {
@@ -53,7 +54,7 @@ namespace CubeAssistance
 
         static void generateScramble()
         {
-            string scramble = "";
+            StringBuilder scramble = new StringBuilder("");
             int randomIndex = 0;
             int prevRandomIndex = -1;
             bool addPrim = false; 
@@ -64,15 +65,16 @@ namespace CubeAssistance
                 addPrim = random.Next(3) == 1;
                 addTwo = random.Next(3) == 2;
 
-                randomIndex = random.Next(moves.Length);
-                if(randomIndex==prevRandomIndex) 
-                    randomIndex = (randomIndex+2)%6;
+                do
+                {
+                randomIndex = random.Next(moves.Length);                    
+                }while(randomIndex==prevRandomIndex);
 
-                scramble += moves[randomIndex];
-                if(addPrim) scramble += "'";
-                if(addTwo && !addPrim) scramble += "2";
+                scramble.Append(moves[randomIndex]);
+                if(addPrim) scramble.Append("'");
+                if(addTwo && !addPrim) scramble.Append("2");
                 
-                scramble += " "; 
+                scramble.Append(" ");
                 prevRandomIndex = randomIndex;  
             }
             Console.WriteLine(scramble);
