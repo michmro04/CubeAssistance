@@ -13,10 +13,9 @@ namespace CubeAssistance
         static List<double> myList = new List<double>();
         public  static Stopwatch stoper = new Stopwatch();
         public static Stopwatch inspectionTimer = new Stopwatch();
-        public static Random random = new Random();
         public static bool isRunning = true;
         public static int index = 1;
-        public static char[] moves = ['U', 'D', 'R', 'L', 'F', 'B'];
+        
         static private bool twoSecPenalty = false;
         static private bool dnfPenalty = false;
         static private bool eightSecWarningGiven = false;
@@ -24,73 +23,10 @@ namespace CubeAssistance
         static private bool twoSecPenaltyWarningGiven = false;
         static private bool dnfPenaltyWarningGiven = false;
 
-
-        static double averageOfN(int n, List<double> list)
-        {
-            int capacity = list.Count();
-            if(capacity < n) { return 0.0; }
-            
-           List<double>listOfN = list.TakeLast(n).ToList();
-
-            //removing best and worst time 
-            double min = listOfN.Min();
-            double max = listOfN.Max();
-        
-            listOfN.Remove(min);
-            listOfN.Remove(max);
-        
-            //calculating average
-            double result = 0;
-            foreach(double time in listOfN)
-            {
-                result+=time;
-            }
-            result /=(n-2);
-            result = Math.Round(result, 3); 
-            return result;
-        }
-        
-        static void showStats()
-        {
-            double ao5 = averageOfN(5, myList);
-            Console.WriteLine("Ao5=" + ao5 + "s");
-            double ao12 = averageOfN(12, myList);
-            Console.WriteLine("Ao12=" + ao12 + "s");
-            double ao20 = averageOfN(20, myList);
-            Console.WriteLine("Ao20=" + ao20 + "s");
-        }
-
-        static void generateScramble()
-        {
-            StringBuilder scramble = new StringBuilder("");
-            int randomIndex = 0;
-            int prevRandomIndex = -1;
-            bool addPrim = false; 
-            bool addTwo = false;
-
-            for(int i=0; i<20; i++)
-            {
-                addPrim = random.Next(3) == 1;
-                addTwo = random.Next(3) == 2;
-
-                do
-                {
-                randomIndex = random.Next(moves.Length);                    
-                }while(randomIndex==prevRandomIndex);
-
-                scramble.Append(moves[randomIndex]);
-                if(addPrim) scramble.Append("'");
-                if(addTwo && !addPrim) scramble.Append("2");
-                
-                scramble.Append(" ");
-                prevRandomIndex = randomIndex;  
-            }
-            Console.WriteLine(scramble);
-        }
-
-
         static void Main(string[] args){
 
+            var scrambleGenerator = new ScrambleGenerator();
+            SessionManager session = new SessionManager();
             Console.CursorVisible = false;
             
             //Welcoming texts
@@ -111,7 +47,8 @@ namespace CubeAssistance
             {
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine("\nSolve no." + index);
-                generateScramble();
+                string newScramble = scrambleGenerator.generateScramble();
+                Console.WriteLine(newScramble);
                 
                 var key = Console.ReadKey(true).Key;
 
@@ -189,16 +126,18 @@ namespace CubeAssistance
                         Console.SetCursorPosition(0, Console.CursorTop);
                         
                         if(double.IsPositiveInfinity(timeSpan))
-                            Console.WriteLine("Time" + index + " = DNF.                   ");
+                            Console.WriteLine("Time" + index + " = DNF                   ");
                         else if(twoSecPenalty)
-                            Console.WriteLine("Time" + index + " = " + timeSpan + "s. (+2)                 ");
+                            Console.WriteLine("Time" + index + " = " + timeSpan + "s (+2)                 ");
                         else 
-                            Console.WriteLine("Time" + index + " = " + timeSpan + " s.                ");
+                            Console.WriteLine("Time" + index + " = " + timeSpan + " s                ");
                         
-                        myList.Add(timeSpan);
+                        session.AddTime(timeSpan);
                         stoper.Reset();
                         Console.ForegroundColor = ConsoleColor.DarkGray;
-                        showStats();
+                        Console.WriteLine("Ao5 = " +session.GetAo5() +"s");
+                        Console.WriteLine("Ao12= " +session.GetAo12()+"s");
+                        Console.WriteLine("Ao520= "+session.GetAo20()+"s");
                         break;
 
                     case ConsoleKey.Q:
